@@ -1076,8 +1076,6 @@ action()
 
 }
 
-bindEnter("passwordInput",checkPassword)
-
 bindEnter("englishWord",addWord)
 bindEnter("meanings",addWord)
 
