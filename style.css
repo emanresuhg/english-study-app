@@ -77,3 +77,16 @@ margin-right:10px;
 padding:5px 10px;
 font-size:12px;
 }
+
+
+#setSelection{
+margin:20px 0;
+}
+
+.setItem{
+background:white;
+padding:10px;
+margin:5px 0;
+border-radius:6px;
+box-shadow:0 1px 5px rgba(0,0,0,0.1);
+}
