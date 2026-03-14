@@ -10,7 +10,11 @@
 
 <div id="lockScreen" class="centerBox">
 <h2>Enter Password</h2>
-<input type="password" id="passwordInput">
+<input 
+type="password" 
+id="passwordInput"
+onkeydown="if(event.key==='Enter'){checkPassword()}"
+>
 <button onclick="checkPassword()">Enter</button>
 </div>
 
