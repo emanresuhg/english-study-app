@@ -655,9 +655,9 @@ localStorage.setItem("wrongNotes",JSON.stringify(notes))
 
 }
 
+if(document.getElementById("setSelection")){
 loadTestSets()
-
-
+}
 
 let testPassages=[]
 let currentPassageIndex=0
