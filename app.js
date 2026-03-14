@@ -22,92 +22,167 @@ location.href="../index.html"
 }
 
 
-function loadSets(){
 
-const sets = JSON.parse(localStorage.getItem("wordSets")) || []
+function getStats(){
 
-const list = document.getElementById("setList")
+return JSON.parse(localStorage.getItem("stats")) || {
 
-list.innerHTML=""
+totalQuestions:0,
+totalCorrect:0,
 
-sets.forEach((set,i)=>{
+wordQuestions:0,
+wordCorrect:0,
 
-const div=document.createElement("div")
+passageQuestions:0,
+passageCorrect:0,
 
-div.innerHTML=set.name
-
-list.appendChild(div)
-
-})
-
-}
-
-
-function addSet(){
-
-const name = document.getElementById("setName").value
-
-if(!name)return
-
-const sets = JSON.parse(localStorage.getItem("wordSets")) || []
-
-sets.push({name:name,words:[]})
-
-localStorage.setItem("wordSets",JSON.stringify(sets))
-
-loadSets()
+wrongWords:{},
+passageStudy:{},
+studyDates:[]
 
 }
 
+}
 
-if(document.getElementById("setList")){
+function saveStats(stats){
 
-loadSets()
+localStorage.setItem("stats",JSON.stringify(stats))
 
 }
 
-function loadPassages(){
+function recordStudy(){
 
-const passages = JSON.parse(localStorage.getItem("passages")) || []
+let stats=getStats()
 
-const list = document.getElementById("passageList")
+const today=new Date().toISOString().slice(0,10)
 
-if(!list)return
+if(!stats.studyDates.includes(today)){
 
-list.innerHTML=""
-
-passages.forEach(p=>{
-
-const div=document.createElement("div")
-
-div.innerHTML=p.title
-
-list.appendChild(div)
-
-})
+stats.studyDates.push(today)
 
 }
 
-
-function addPassage(){
-
-const title=document.getElementById("title").value
-const text=document.getElementById("text").value
-const translation=document.getElementById("translation").value
-const topic=document.getElementById("topic").value
-
-const passages=JSON.parse(localStorage.getItem("passages"))||[]
-
-passages.push({title,text,translation,topic})
-
-localStorage.setItem("passages",JSON.stringify(passages))
-
-loadPassages()
+saveStats(stats)
 
 }
 
+function recordQuestion(type,correct,question){
 
-loadPassages()
+let stats=getStats()
+
+stats.totalQuestions++
+
+if(correct) stats.totalCorrect++
+
+if(type==="word"){
+
+stats.wordQuestions++
+
+if(correct) stats.wordCorrect++
+
+}
+
+if(type==="passage"){
+
+stats.passageQuestions++
+
+if(correct) stats.passageCorrect++
+
+}
+
+if(!correct && type==="word"){
+
+stats.wrongWords[question]=(stats.wrongWords[question]||0)+1
+
+}
+
+if(type==="passage"){
+
+stats.passageStudy[question]=(stats.passageStudy[question]||0)+1
+
+}
+
+recordStudy()
+
+saveStats(stats)
+
+}
+
+function loadStats(){
+
+let stats=getStats()
+
+if(!document.getElementById("totalQuestions")) return
+
+document.getElementById("totalQuestions").textContent=stats.totalQuestions
+document.getElementById("totalCorrect").textContent=stats.totalCorrect
+
+let rate=0
+
+if(stats.totalQuestions>0){
+
+rate=Math.round((stats.totalCorrect/stats.totalQuestions)*100)
+
+}
+
+document.getElementById("totalRate").textContent=rate+"%"
+
+let wordRate=0
+
+if(stats.wordQuestions>0){
+
+wordRate=Math.round((stats.wordCorrect/stats.wordQuestions)*100)
+
+}
+
+document.getElementById("wordRate").textContent=wordRate+"%"
+
+let passageRate=0
+
+if(stats.passageQuestions>0){
+
+passageRate=Math.round((stats.passageCorrect/stats.passageQuestions)*100)
+
+}
+
+document.getElementById("passageRate").textContent=passageRate+"%"
+
+let mostWrong="없음"
+let max=0
+
+for(let w in stats.wrongWords){
+
+if(stats.wrongWords[w]>max){
+
+max=stats.wrongWords[w]
+mostWrong=w
+
+}
+
+}
+
+document.getElementById("mostWrongWord").textContent=mostWrong
+
+let mostPassage="없음"
+max=0
+
+for(let p in stats.passageStudy){
+
+if(stats.passageStudy[p]>max){
+
+max=stats.passageStudy[p]
+mostPassage=p
+
+}
+
+}
+
+document.getElementById("mostPassage").textContent=mostPassage
+
+document.getElementById("studyDays").textContent=stats.studyDates.length
+
+}
+
 
 
 let currentSetIndex=null
@@ -303,7 +378,6 @@ speechSynthesis.speak(msg)
 
 }
 
-loadSets()
 
 
 let testWords=[]
@@ -435,8 +509,11 @@ correct=userAnswer.toLowerCase()===word.eng.toLowerCase()
 if(correct){
 
 correctCount++
+recordQuestion("word",true,word.eng)
 
 }else{
+
+recordQuestion("word",false,word.eng)
 
 wrongWords.push({
 
@@ -543,6 +620,7 @@ localStorage.setItem("wrongNotes",JSON.stringify(notes))
 loadTestSets()
 
 
+
 let testPassages=[]
 let currentPassageIndex=0
 let passageCorrect=0
@@ -618,6 +696,8 @@ const type=document.getElementById("passageTestType").value
 
 const p=testPassages[currentPassageIndex]
 
+recordQuestion("passage",true,p.title)
+
 const q=document.getElementById("passageQuestion")
 
 if(type==="blank"){
@@ -685,6 +765,8 @@ passageCorrect++
 
 }else{
 
+recordQuestion("passage",false,p.title)
+
 savePassageWrong(p,answer)
 
 alert("정답:\n"+p.text)
@@ -735,134 +817,6 @@ localStorage.setItem("wrongNotes",JSON.stringify(notes))
 
 loadPassageSelection()
 
-let wrongTestList=[]
-let wrongIndex=0
-let wrongCorrect=0
-let wrongType="all"
 
-function showWrong(type){
 
-wrongType=type
-
-let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
-
-const list=document.getElementById("wrongList")
-
-if(!list) return
-
-list.innerHTML=""
-
-notes.forEach((n,i)=>{
-
-if(type!=="all" && n.type!==type) return
-
-const div=document.createElement("div")
-
-div.className="wrongItem"
-
-div.innerHTML=`
-문제: ${n.question||n.title}
-<br>
-내 답: ${n.user}
-<br>
-정답: ${n.correct}
-`
-
-list.appendChild(div)
-
-})
-
-}
-
-function startWrongTest(){
-
-let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
-
-wrongTestList=[]
-
-notes.forEach((n,i)=>{
-
-if(wrongType==="all"||n.type===wrongType){
-
-wrongTestList.push({...n,index:i})
-
-}
-
-})
-
-if(wrongTestList.length===0){
-
-alert("오답이 없습니다")
-
-return
-
-}
-
-wrongIndex=0
-wrongCorrect=0
-
-runWrongQuestion()
-
-}
-
-function runWrongQuestion(){
-
-if(wrongIndex>=wrongTestList.length){
-
-alert("재시험 완료")
-
-return
-
-}
-
-const q=wrongTestList[wrongIndex]
-
-let answer=prompt("문제:\n"+(q.question||q.title))
-
-if(answer===null) return
-
-let correct=false
-
-if(q.type==="wordMeaning"){
-
-correct=q.correct.includes(answer)
-
-}else if(q.type==="wordSpelling"){
-
-correct=answer.toLowerCase()===q.correct.toLowerCase()
-
-}else{
-
-correct=answer.trim()===q.correct.trim()
-
-}
-
-if(correct){
-
-alert("정답")
-
-removeWrong(q.index)
-
-wrongCorrect++
-
-}else{
-
-alert("오답\n정답:"+q.correct)
-
-}
-
-wrongIndex++
-
-runWrongQuestion()
-
-}
-
-function removeWrong(i){
-
-let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
-
-notes.splice(i,1)
-
-localStorage.setItem("wrongNotes",JSON.stringify(notes))
-
-}
+loadStats()
