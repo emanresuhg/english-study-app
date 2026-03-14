@@ -182,6 +182,10 @@ document.getElementById("mostPassage").textContent=mostPassage
 
 document.getElementById("studyDays").textContent=stats.studyDates.length
 
+const minutes=stats.studyMinutes||0
+
+document.getElementById("studyTime").textContent=minutes
+
 }
 
 
