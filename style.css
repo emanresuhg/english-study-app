@@ -90,3 +90,17 @@ margin:5px 0;
 border-radius:6px;
 box-shadow:0 1px 5px rgba(0,0,0,0.1);
 }
+
+
+textarea{
+width:100%;
+height:150px;
+padding:10px;
+font-size:16px;
+}
+
+.blank{
+background:#ddd;
+padding:3px 10px;
+border-radius:4px;
+}
