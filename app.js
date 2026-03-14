@@ -1051,23 +1051,6 @@ reader.readAsText(file)
 
 }
 
-window.onload=function(){
-
-if(sessionStorage.getItem("loggedIn")==="true"){
-
-const lock=document.getElementById("lockScreen")
-const app=document.getElementById("app")
-
-if(lock && app){
-
-lock.style.display="none"
-app.style.display="block"
-
-}
-
-}
-
-}
 
 function goBack(){
 
