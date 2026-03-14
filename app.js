@@ -304,3 +304,240 @@ speechSynthesis.speak(msg)
 }
 
 loadSets()
+
+
+let testWords=[]
+let currentQuestion=0
+let correctCount=0
+let wrongWords=[]
+let timerInterval
+let timeLeft=10
+
+function loadTestSets(){
+
+const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
+
+const container=document.getElementById("setSelection")
+
+if(!container) return
+
+container.innerHTML=""
+
+sets.forEach((set,i)=>{
+
+const div=document.createElement("div")
+
+div.className="setItem"
+
+div.innerHTML=`
+<label>
+<input type="checkbox" value="${i}">
+${set.name}
+</label>
+`
+
+container.appendChild(div)
+
+})
+
+}
+
+function startWordTest(){
+
+const checkboxes=document.querySelectorAll("#setSelection input:checked")
+
+const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
+
+testWords=[]
+
+checkboxes.forEach(cb=>{
+
+const setIndex=cb.value
+
+testWords=testWords.concat(sets[setIndex].words)
+
+})
+
+if(testWords.length===0){
+
+alert("세트를 선택하세요")
+
+return
+
+}
+
+shuffleArray(testWords)
+
+currentQuestion=0
+correctCount=0
+wrongWords=[]
+
+document.getElementById("testArea").style.display="block"
+
+showQuestion()
+
+}
+
+function showQuestion(){
+
+if(currentQuestion>=testWords.length){
+
+endTest()
+
+return
+
+}
+
+const type=document.getElementById("testType").value
+
+const word=testWords[currentQuestion]
+
+const q=document.getElementById("question")
+
+if(type==="meaning"){
+
+q.innerText=word.eng
+
+}else{
+
+q.innerText=word.mean.join(", ")
+
+}
+
+document.getElementById("answerInput").value=""
+
+startTimer()
+
+}
+
+function submitAnswer(){
+
+clearInterval(timerInterval)
+
+const type=document.getElementById("testType").value
+
+const word=testWords[currentQuestion]
+
+const userAnswer=document.getElementById("answerInput").value.trim()
+
+let correct=false
+
+if(type==="meaning"){
+
+correct=word.mean.includes(userAnswer)
+
+}else{
+
+correct=userAnswer.toLowerCase()===word.eng.toLowerCase()
+
+}
+
+if(correct){
+
+correctCount++
+
+}else{
+
+wrongWords.push({
+
+question:word.eng,
+
+correct:word.mean.join(", "),
+
+user:userAnswer
+
+})
+
+alert("정답: "+word.mean.join(", "))
+
+}
+
+currentQuestion++
+
+showQuestion()
+
+}
+
+function endTest(){
+
+document.getElementById("testArea").style.display="none"
+
+const result=document.getElementById("resultArea")
+
+result.innerHTML=`
+
+<h2>테스트 종료</h2>
+
+<p>정답률: ${correctCount}/${testWords.length}</p>
+
+`
+
+saveWrongNotes()
+
+}
+
+function startTimer(){
+
+timeLeft=10
+
+const timer=document.getElementById("timer")
+
+timer.innerText="남은 시간: "+timeLeft
+
+timerInterval=setInterval(()=>{
+
+timeLeft--
+
+timer.innerText="남은 시간: "+timeLeft
+
+if(timeLeft<=0){
+
+clearInterval(timerInterval)
+
+submitAnswer()
+
+}
+
+},1000)
+
+}
+
+function shuffleArray(array){
+
+for(let i=array.length-1;i>0;i--){
+
+const j=Math.floor(Math.random()*(i+1))
+
+[array[i],array[j]]=[array[j],array[i]]
+
+}
+
+}
+
+function saveWrongNotes(){
+
+if(wrongWords.length===0) return
+
+let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
+
+wrongWords.forEach(w=>{
+
+notes.push({
+
+type:"wordMeaning",
+
+question:w.question,
+
+correct:w.correct,
+
+user:w.user
+
+})
+
+})
+
+localStorage.setItem("wrongNotes",JSON.stringify(notes))
+
+}
+
+loadTestSets()
