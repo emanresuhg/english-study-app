@@ -1163,18 +1163,16 @@ let currentPassageIndex=null
 
 function loadPassages(){
 
-const passages = JSON.parse(localStorage.getItem("passages")) || []
-
-const list = document.getElementById("passageList")
+const list=document.getElementById("passageList")
 
 if(!list) return
+
+const passages = JSON.parse(localStorage.getItem("passages")) || []
 
 list.innerHTML=""
 
 passages.forEach((p,i)=>{
-
 createPassageCard(p,i)
-
 })
 
 }
