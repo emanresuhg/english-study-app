@@ -1,18 +1,18 @@
 let studyStartTime=null
 function checkPassword(){
 
-const pw = document.getElementById("passwordInput").value;
+const pw = document.getElementById("passwordInput").value
 
 if(pw === "12345"){
 
 sessionStorage.setItem("loggedIn","true")
 
-document.getElementById("lockScreen").style.display="none";
-document.getElementById("app").style.display="block";
+document.getElementById("lockScreen").style.display="none"
+document.getElementById("app").style.display="block"
 
 }else{
 
-alert("Wrong Password");
+alert("Wrong Password")
 
 }
 
