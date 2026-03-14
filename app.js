@@ -186,8 +186,6 @@ const minutes=stats.studyMinutes||0
 
 document.getElementById("studyTime").textContent=minutes
 
-
-
 let currentSetIndex=null
 
 function loadSets(){
