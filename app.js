@@ -348,6 +348,10 @@ document.getElementById("meanings").value=""
 
 loadWords()
 
+setTimeout(()=>{
+window.scrollTo(0,document.body.scrollHeight)
+},50)
+
 document.getElementById("englishWord").focus()
 
 }
