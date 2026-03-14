@@ -147,38 +147,6 @@ pr=Math.round((stats.passageCorrect/stats.passageQuestions)*100)
 
 passageRate.textContent=pr+"%"
 }
-document.getElementById("totalQuestions").textContent=stats.totalQuestions
-document.getElementById("totalCorrect").textContent=stats.totalCorrect
-
-let rate=0
-
-if(stats.totalQuestions>0){
-
-rate=Math.round((stats.totalCorrect/stats.totalQuestions)*100)
-
-}
-
-document.getElementById("totalRate").textContent=rate+"%"
-
-let wordRate=0
-
-if(stats.wordQuestions>0){
-
-wordRate=Math.round((stats.wordCorrect/stats.wordQuestions)*100)
-
-}
-
-document.getElementById("wordRate").textContent=wordRate+"%"
-
-let passageRate=0
-
-if(stats.passageQuestions>0){
-
-passageRate=Math.round((stats.passageCorrect/stats.passageQuestions)*100)
-
-}
-
-document.getElementById("passageRate").textContent=passageRate+"%"
 
 let mostWrong="없음"
 let max=0
