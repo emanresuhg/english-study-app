@@ -348,6 +348,8 @@ document.getElementById("meanings").value=""
 
 loadWords()
 
+document.getElementById("englishWord").focus()
+
 }
 
 function deleteWord(i){
