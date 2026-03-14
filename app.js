@@ -916,37 +916,6 @@ list.appendChild(div)
 }
 
 
-
-function searchPassages(){
-
-const input=document.getElementById("passageSearch")
-
-if(!input) return
-
-const keyword=input.value.toLowerCase()
-
-const passages=JSON.parse(localStorage.getItem("passages"))||[]
-
-const list=document.getElementById("passageList")
-
-if(!list) return
-
-list.innerHTML=""
-
-passages.forEach((p,i)=>{
-
-if(!p.title.toLowerCase().includes(keyword)) return
-
-const div=document.createElement("div")
-
-div.innerHTML=p.title
-
-list.appendChild(div)
-
-})
-
-}
-
 function showFavorites(){
 
 const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
