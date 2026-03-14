@@ -1,3 +1,4 @@
+let studyStartTime=null
 function checkPassword(){
 
 const pw = document.getElementById("passwordInput").value;
@@ -418,6 +419,8 @@ container.appendChild(div)
 
 function startWordTest(){
 
+startStudySession()
+
 const checkboxes=document.querySelectorAll("#setSelection input:checked")
 
 const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
@@ -536,6 +539,8 @@ showQuestion()
 }
 
 function endTest(){
+
+endStudySession()
 
 document.getElementById("testArea").style.display="none"
 
@@ -656,6 +661,8 @@ container.appendChild(div)
 }
 
 function startPassageTest(){
+
+startStudySession()
 
 const checks=document.querySelectorAll("#passageSelection input:checked")
 
@@ -781,6 +788,8 @@ showPassageQuestion()
 
 function endPassageTest(){
 
+endStudySession()
+
 document.getElementById("passageTestArea").style.display="none"
 
 const result=document.getElementById("passageResult")
@@ -902,5 +911,69 @@ div.innerHTML=p.title
 list.appendChild(div)
 
 })
+
+}
+
+function showFavorites(){
+
+const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
+
+let favorites=[]
+
+sets.forEach(set=>{
+
+set.words.forEach(word=>{
+
+if(word.favorite){
+
+favorites.push(word)
+
+}
+
+})
+
+})
+
+if(favorites.length===0){
+
+alert("즐겨찾기 단어가 없습니다")
+
+return
+
+}
+
+let text="★ 즐겨찾기 단어\n\n"
+
+favorites.forEach(w=>{
+
+text+=w.eng+" : "+w.mean.join(", ")+"\n"
+
+})
+
+alert(text)
+
+}
+
+function startStudySession(){
+
+studyStartTime=Date.now()
+
+}
+
+function endStudySession(){
+
+if(!studyStartTime) return
+
+let stats=getStats()
+
+const now=Date.now()
+
+const minutes=Math.floor((now-studyStartTime)/60000)
+
+stats.studyMinutes=(stats.studyMinutes||0)+minutes
+
+saveStats(stats)
+
+studyStartTime=null
 
 }
