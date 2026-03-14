@@ -5,6 +5,8 @@ const pw = document.getElementById("passwordInput").value;
 
 if(pw === "12345"){
 
+sessionStorage.setItem("loggedIn","true")
+
 document.getElementById("lockScreen").style.display="none";
 document.getElementById("app").style.display="block";
 
@@ -15,7 +17,6 @@ alert("Wrong Password");
 }
 
 }
-
 function goHome(){
 
 location.href="../index.html"
@@ -1071,5 +1072,29 @@ alert("잘못된 파일입니다")
 }
 
 reader.readAsText(file)
+
+}
+
+window.onload=function(){
+
+if(sessionStorage.getItem("loggedIn")==="true"){
+
+const lock=document.getElementById("lockScreen")
+const app=document.getElementById("app")
+
+if(lock && app){
+
+lock.style.display="none"
+app.style.display="block"
+
+}
+
+}
+
+}
+
+function goBack(){
+
+history.back()
 
 }
