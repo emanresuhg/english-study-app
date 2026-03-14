@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Passages</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header>
+<h1>지문집</h1>
+</header>
+
+<div style="padding:20px">
+
+<button onclick="goHome()">홈</button>
+
+<h2>지문 목록</h2>
+
+<div id="passageList"></div>
+
+<h3>지문 추가</h3>
+
+<input id="title" placeholder="제목">
+
+<textarea id="text" placeholder="지문"></textarea>
+
+<textarea id="translation" placeholder="해석"></textarea>
+
+<input id="topic" placeholder="주제 (선택)">
+
+<button onclick="addPassage()">추가</button>
+
+</div>
+
+<script src="../app.js"></script>
+
+</body>
+</html>
