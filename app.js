@@ -820,3 +820,87 @@ loadPassageSelection()
 
 
 loadStats()
+
+function searchWords(){
+
+const input=document.getElementById("wordSearch")
+
+if(!input) return
+
+const keyword=input.value.toLowerCase()
+
+const sets=JSON.parse(localStorage.getItem("wordSets"))||[]
+
+if(currentSetIndex===null) return
+
+const words=sets[currentSetIndex].words
+
+const list=document.getElementById("wordList")
+
+list.innerHTML=""
+
+words.forEach((w,i)=>{
+
+const eng=w.eng.toLowerCase()
+
+const mean=w.mean.join(" ").toLowerCase()
+
+if(!eng.includes(keyword) && !mean.includes(keyword)) return
+
+const div=document.createElement("div")
+
+div.className="wordCard"
+
+div.innerHTML=`
+
+<b>${w.eng}</b> : ${w.mean.join(", ")}
+
+<div class="wordActions">
+
+<button class="smallBtn" onclick="speakWord('${w.eng}')">🔊</button>
+
+<button class="smallBtn" onclick="toggleFavorite(${i})">${w.favorite?"★":"☆"}</button>
+
+<button class="smallBtn" onclick="deleteWord(${i})">삭제</button>
+
+</div>
+
+`
+
+list.appendChild(div)
+
+})
+
+}
+
+
+
+function searchPassages(){
+
+const input=document.getElementById("passageSearch")
+
+if(!input) return
+
+const keyword=input.value.toLowerCase()
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+const list=document.getElementById("passageList")
+
+if(!list) return
+
+list.innerHTML=""
+
+passages.forEach((p,i)=>{
+
+if(!p.title.toLowerCase().includes(keyword)) return
+
+const div=document.createElement("div")
+
+div.innerHTML=p.title
+
+list.appendChild(div)
+
+})
+
+}
