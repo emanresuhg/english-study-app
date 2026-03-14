@@ -12,19 +12,41 @@
 <h1>단어장</h1>
 </header>
 
-<div style="padding:20px">
+<div class="container">
 
-<button onclick="goHome()">홈으로</button>
+<button onclick="goHome()">홈</button>
 
 <h2>세트 목록</h2>
 
 <div id="setList"></div>
 
-<h3>세트 추가</h3>
+<h3>세트 만들기</h3>
 
 <input id="setName" placeholder="세트 이름">
 
-<button onclick="addSet()">추가</button>
+<button onclick="addSet()">세트 추가</button>
+
+<hr>
+
+<div id="wordSection" style="display:none">
+
+<h2 id="currentSetTitle"></h2>
+
+<button onclick="backToSets()">← 돌아가기</button>
+
+<h3>단어 목록</h3>
+
+<div id="wordList"></div>
+
+<h3>단어 추가</h3>
+
+<input id="englishWord" placeholder="English word">
+
+<input id="meanings" placeholder="뜻 (쉼표로 구분)">
+
+<button onclick="addWord()">추가</button>
+
+</div>
 
 </div>
 
