@@ -114,8 +114,39 @@ function loadStats(){
 
 let stats=getStats()
 
-if(!document.getElementById("totalQuestions")) return
+const totalQ=document.getElementById("totalQuestions")
+const totalC=document.getElementById("totalCorrect")
+const totalRate=document.getElementById("totalRate")
+const wordRate=document.getElementById("wordRate")
+const passageRate=document.getElementById("passageRate")
 
+if(!totalQ) return
+
+totalQ.textContent=stats.totalQuestions
+totalC.textContent=stats.totalCorrect
+
+let rate=0
+
+if(stats.totalQuestions>0){
+rate=Math.round((stats.totalCorrect/stats.totalQuestions)*100)
+}
+
+totalRate.textContent=rate+"%"
+
+let wr=0
+if(stats.wordQuestions>0){
+wr=Math.round((stats.wordCorrect/stats.wordQuestions)*100)
+}
+
+wordRate.textContent=wr+"%"
+
+let pr=0
+if(stats.passageQuestions>0){
+pr=Math.round((stats.passageCorrect/stats.passageQuestions)*100)
+}
+
+passageRate.textContent=pr+"%"
+}
 document.getElementById("totalQuestions").textContent=stats.totalQuestions
 document.getElementById("totalCorrect").textContent=stats.totalCorrect
 
