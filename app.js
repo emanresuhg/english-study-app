@@ -378,18 +378,41 @@ word.favorite=!word.favorite
 
 localStorage.setItem("wordSets",JSON.stringify(sets))
 
-loadWords()
+const starBtn=document.getElementById("fav-"+i)
+
+if(starBtn){
+starBtn.innerText=word.favorite?"★":"☆"
+}
 
 }
 
 function speakWord(word){
 
+speechSynthesis.cancel()
+
 const msg=new SpeechSynthesisUtterance(word)
+
+const voices=speechSynthesis.getVoices()
+
+let englishVoice=null
+
+for(let v of voices){
+if(v.lang.startsWith("en")){
+englishVoice=v
+break
+}
+}
+
+if(englishVoice){
+msg.voice=englishVoice
+}
+
+msg.rate=0.85
+msg.pitch=1
 
 speechSynthesis.speak(msg)
 
 }
-
 
 
 let testWords=[]
@@ -879,7 +902,7 @@ div.innerHTML=`
 
 <button class="smallBtn" onclick="speakWord('${w.eng}')">🔊</button>
 
-<button class="smallBtn" onclick="toggleFavorite(${i})">${w.favorite?"★":"☆"}</button>
+<button class="smallBtn" id="fav-${i}" onclick="toggleFavorite(${i})">${w.favorite?"★":"☆"}</button>
 
 <button class="smallBtn" onclick="deleteWord(${i})">삭제</button>
 
