@@ -1301,32 +1301,3 @@ createPassageCard(p,i)
 if(document.getElementById("passageList")){
 loadPassages()
 }
-
-function addPassage(){
-
-const title=document.getElementById("title").value
-const text=document.getElementById("text").value
-const translation=document.getElementById("translation").value
-const topic=document.getElementById("topic").value
-
-if(!title || !text) return
-
-const passages=JSON.parse(localStorage.getItem("passages"))||[]
-
-passages.push({
-title:title,
-text:text,
-translation:translation,
-topic:topic
-})
-
-localStorage.setItem("passages",JSON.stringify(passages))
-
-document.getElementById("title").value=""
-document.getElementById("text").value=""
-document.getElementById("translation").value=""
-document.getElementById("topic").value=""
-
-loadPassages()
-
-}
