@@ -981,3 +981,95 @@ saveStats(stats)
 studyStartTime=null
 
 }
+
+function exportData(){
+
+const data={
+
+wordSets:JSON.parse(localStorage.getItem("wordSets"))||[],
+
+passages:JSON.parse(localStorage.getItem("passages"))||[],
+
+wrongNotes:JSON.parse(localStorage.getItem("wrongNotes"))||[],
+
+stats:JSON.parse(localStorage.getItem("stats"))||{}
+
+}
+
+const json=JSON.stringify(data,null,2)
+
+const blob=new Blob([json],{type:"application/json"})
+
+const url=URL.createObjectURL(blob)
+
+const a=document.createElement("a")
+
+a.href=url
+
+a.download="study_backup.json"
+
+a.click()
+
+URL.revokeObjectURL(url)
+
+alert("백업 파일이 다운로드되었습니다")
+
+}
+
+
+
+function importData(){
+
+const fileInput=document.getElementById("importFile")
+
+const file=fileInput.files[0]
+
+if(!file){
+
+alert("파일을 선택하세요")
+
+return
+
+}
+
+const reader=new FileReader()
+
+reader.onload=function(e){
+
+try{
+
+const data=JSON.parse(e.target.result)
+
+if(data.wordSets){
+
+localStorage.setItem("wordSets",JSON.stringify(data.wordSets))
+}
+
+if(data.passages){
+
+localStorage.setItem("passages",JSON.stringify(data.passages))
+}
+
+if(data.wrongNotes){
+
+localStorage.setItem("wrongNotes",JSON.stringify(data.wrongNotes))
+}
+
+if(data.stats){
+
+localStorage.setItem("stats",JSON.stringify(data.stats))
+}
+
+alert("데이터 복원이 완료되었습니다. 페이지를 새로고침하세요.")
+
+}catch(err){
+
+alert("잘못된 파일입니다")
+
+}
+
+}
+
+reader.readAsText(file)
+
+}
