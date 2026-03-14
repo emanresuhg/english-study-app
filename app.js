@@ -1098,3 +1098,34 @@ function goBack(){
 history.back()
 
 }
+
+function enableEnterSystem(){
+
+function bindEnter(inputId, action){
+
+const el=document.getElementById(inputId)
+
+if(!el) return
+
+el.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+action()
+}
+
+})
+
+}
+
+bindEnter("passwordInput",checkPassword)
+
+bindEnter("englishWord",addWord)
+bindEnter("meanings",addWord)
+
+bindEnter("answerInput",submitAnswer)
+
+bindEnter("passageAnswer",submitPassageAnswer)
+
+}
+
+document.addEventListener("DOMContentLoaded",enableEnterSystem)
