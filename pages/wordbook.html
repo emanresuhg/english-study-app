@@ -51,9 +51,9 @@ style="width:100%;padding:10px;margin:10px 0"
 
 <h3>단어 추가</h3>
 
-<input id="englishWord" placeholder="English word">
+<input id="englishWord" placeholder="영어 단어 입력" onkeydown="if(event.key==='Enter'){document.getElementById('meanings').focus()}">
 
-<input id="meanings" placeholder="뜻 (쉼표로 구분)">
+<input id="meanings" placeholder="뜻 입력(쉼표로 구분)" onkeydown="if(event.key==='Enter'){document.getElementById('meanings').focus()}">
 
 <button onclick="addWord()">추가</button>
 
