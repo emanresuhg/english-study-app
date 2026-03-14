@@ -1159,6 +1159,8 @@ bindEnter("passageAnswer",submitPassageAnswer)
 
 document.addEventListener("DOMContentLoaded",enableEnterSystem)
 
+let currentPassageIndex=null
+
 function loadPassages(){
 
 const passages = JSON.parse(localStorage.getItem("passages")) || []
@@ -1169,18 +1171,139 @@ if(!list) return
 
 list.innerHTML=""
 
-passages.forEach(p=>{
+passages.forEach((p,i)=>{
 
-const div=document.createElement("div")
-
-div.innerHTML=p.title
-
-list.appendChild(div)
+createPassageCard(p,i)
 
 })
 
 }
 
+
+function createPassageCard(p,i){
+
+const list=document.getElementById("passageList")
+
+const div=document.createElement("div")
+
+div.className="wordCard"
+
+div.innerHTML=`
+
+<b>${p.title}</b>
+
+<div class="wordActions">
+
+<button class="smallBtn" onclick="openPassage(${i})">열기</button>
+
+<button class="smallBtn" onclick="deletePassage(${i})">삭제</button>
+
+</div>
+
+`
+
+list.appendChild(div)
+
+}
+
+
+function addPassage(){
+
+const title=document.getElementById("title").value
+const text=document.getElementById("text").value
+const translation=document.getElementById("translation").value
+const topic=document.getElementById("topic").value
+
+if(!title || !text) return
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+passages.push({
+title:title,
+text:text,
+translation:translation,
+topic:topic
+})
+
+localStorage.setItem("passages",JSON.stringify(passages))
+
+document.getElementById("title").value=""
+document.getElementById("text").value=""
+document.getElementById("translation").value=""
+document.getElementById("topic").value=""
+
+loadPassages()
+
+}
+
+
+function deletePassage(i){
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+passages.splice(i,1)
+
+localStorage.setItem("passages",JSON.stringify(passages))
+
+loadPassages()
+
+}
+
+
+function openPassage(i){
+
+currentPassageIndex=i
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+const p=passages[i]
+
+document.getElementById("passageTitleView").innerText=p.title
+document.getElementById("passageTextView").innerText=p.text
+document.getElementById("passageTranslationView").innerText=p.translation
+document.getElementById("passageTopicView").innerText=p.topic || ""
+
+document.getElementById("passageView").style.display="block"
+
+}
+
+
+function closePassage(){
+
+document.getElementById("passageView").style.display="none"
+
+}
+
+
+function searchPassages(){
+
+const keyword=document.getElementById("passageSearch").value.toLowerCase()
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+const list=document.getElementById("passageList")
+
+list.innerHTML=""
+
+passages.forEach((p,i)=>{
+
+const title=p.title.toLowerCase()
+const text=p.text.toLowerCase()
+
+if(title.includes(keyword) || text.includes(keyword)){
+
+createPassageCard(p,i)
+
+}
+
+})
+
+}
+
+
+if(document.getElementById("passageList")){
+loadPassages()
+}
 
 function addPassage(){
 
