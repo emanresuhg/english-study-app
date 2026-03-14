@@ -541,3 +541,196 @@ localStorage.setItem("wrongNotes",JSON.stringify(notes))
 }
 
 loadTestSets()
+
+
+let testPassages=[]
+let currentPassageIndex=0
+let passageCorrect=0
+let blankAnswers=[]
+
+function loadPassageSelection(){
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+const container=document.getElementById("passageSelection")
+
+if(!container) return
+
+container.innerHTML=""
+
+passages.forEach((p,i)=>{
+
+const div=document.createElement("div")
+
+div.className="setItem"
+
+div.innerHTML=`
+<label>
+<input type="checkbox" value="${i}">
+${p.title}
+</label>
+`
+
+container.appendChild(div)
+
+})
+
+}
+
+function startPassageTest(){
+
+const checks=document.querySelectorAll("#passageSelection input:checked")
+
+const passages=JSON.parse(localStorage.getItem("passages"))||[]
+
+testPassages=[]
+
+checks.forEach(c=>{
+testPassages.push(passages[c.value])
+})
+
+if(testPassages.length===0){
+alert("지문을 선택하세요")
+return
+}
+
+shuffleArray(testPassages)
+
+currentPassageIndex=0
+passageCorrect=0
+
+document.getElementById("passageTestArea").style.display="block"
+
+showPassageQuestion()
+
+}
+
+function showPassageQuestion(){
+
+if(currentPassageIndex>=testPassages.length){
+
+endPassageTest()
+return
+
+}
+
+const type=document.getElementById("passageTestType").value
+
+const p=testPassages[currentPassageIndex]
+
+const q=document.getElementById("passageQuestion")
+
+if(type==="blank"){
+
+const words=p.text.split(" ")
+
+const removeCount=Math.floor(words.length/8)
+
+let indexes=[]
+
+while(indexes.length<removeCount){
+
+let r=Math.floor(Math.random()*words.length)
+
+if(!indexes.includes(r)) indexes.push(r)
+
+}
+
+blankAnswers=[]
+
+indexes.forEach(i=>{
+blankAnswers.push(words[i])
+words[i]="_____"
+})
+
+q.innerHTML=words.join(" ")
+
+}else{
+
+q.innerHTML="해석:<br>"+p.translation
+
+}
+
+document.getElementById("passageAnswer").value=""
+
+}
+
+function submitPassageAnswer(){
+
+const type=document.getElementById("passageTestType").value
+
+const p=testPassages[currentPassageIndex]
+
+const answer=document.getElementById("passageAnswer").value.trim()
+
+let correct=false
+
+if(type==="blank"){
+
+let answers=answer.split(" ")
+
+correct=JSON.stringify(answers)==JSON.stringify(blankAnswers)
+
+}else{
+
+let clean=(s)=>s.toLowerCase().replace(/[.,]/g,"").trim()
+
+correct=clean(answer)===clean(p.text)
+
+}
+
+if(correct){
+
+passageCorrect++
+
+}else{
+
+savePassageWrong(p,answer)
+
+alert("정답:\n"+p.text)
+
+}
+
+currentPassageIndex++
+
+showPassageQuestion()
+
+}
+
+function endPassageTest(){
+
+document.getElementById("passageTestArea").style.display="none"
+
+const result=document.getElementById("passageResult")
+
+result.innerHTML=`
+
+<h2>테스트 종료</h2>
+
+<p>정답률: ${passageCorrect}/${testPassages.length}</p>
+
+`
+
+}
+
+function savePassageWrong(p,user){
+
+let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
+
+notes.push({
+
+type:"passage",
+
+title:p.title,
+
+correct:p.text,
+
+user:user
+
+})
+
+localStorage.setItem("wrongNotes",JSON.stringify(notes))
+
+}
+
+loadPassageSelection()
