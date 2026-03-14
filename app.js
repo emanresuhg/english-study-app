@@ -3,7 +3,7 @@ function checkPassword(){
 
 const pw = document.getElementById("passwordInput").value;
 
-if(pw === "12345"){
+if(pw === "54321"){
 
 sessionStorage.setItem("loggedIn","true")
 
