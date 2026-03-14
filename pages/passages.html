@@ -17,7 +17,7 @@
 <button onclick="goBack()">← 이전</button>
 <button onclick="goHome()">홈</button>
 
-  <input 
+<input 
 type="text"
 id="passageSearch"
 placeholder="지문 제목 검색..."
@@ -27,7 +27,21 @@ style="width:100%;padding:10px;margin:10px 0"
   
 <h2>지문 목록</h2>
 
-<div id="passageList"></div>
+<div id="passageView" style="display:none">
+
+<h2 id="passageTitleView"></h2>
+
+<p id="passageTextView"></p>
+
+<h3>해석</h3>
+<p id="passageTranslationView"></p>
+
+<h3>주제</h3>
+<p id="passageTopicView"></p>
+
+<button onclick="closePassage()">닫기</button>
+
+</div>
 
 <h3>지문 추가</h3>
 
@@ -37,7 +51,9 @@ style="width:100%;padding:10px;margin:10px 0"
 
 <textarea id="translation" placeholder="해석"></textarea>
 
-<input id="topic" placeholder="주제 (선택)">
+<input id="topic"
+placeholder="주제"
+onkeydown="if(event.key==='Enter'){addPassage()}">
 
 <button onclick="addPassage()">추가</button>
 
