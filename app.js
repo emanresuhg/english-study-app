@@ -734,3 +734,135 @@ localStorage.setItem("wrongNotes",JSON.stringify(notes))
 }
 
 loadPassageSelection()
+
+let wrongTestList=[]
+let wrongIndex=0
+let wrongCorrect=0
+let wrongType="all"
+
+function showWrong(type){
+
+wrongType=type
+
+let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
+
+const list=document.getElementById("wrongList")
+
+if(!list) return
+
+list.innerHTML=""
+
+notes.forEach((n,i)=>{
+
+if(type!=="all" && n.type!==type) return
+
+const div=document.createElement("div")
+
+div.className="wrongItem"
+
+div.innerHTML=`
+문제: ${n.question||n.title}
+<br>
+내 답: ${n.user}
+<br>
+정답: ${n.correct}
+`
+
+list.appendChild(div)
+
+})
+
+}
+
+function startWrongTest(){
+
+let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
+
+wrongTestList=[]
+
+notes.forEach((n,i)=>{
+
+if(wrongType==="all"||n.type===wrongType){
+
+wrongTestList.push({...n,index:i})
+
+}
+
+})
+
+if(wrongTestList.length===0){
+
+alert("오답이 없습니다")
+
+return
+
+}
+
+wrongIndex=0
+wrongCorrect=0
+
+runWrongQuestion()
+
+}
+
+function runWrongQuestion(){
+
+if(wrongIndex>=wrongTestList.length){
+
+alert("재시험 완료")
+
+return
+
+}
+
+const q=wrongTestList[wrongIndex]
+
+let answer=prompt("문제:\n"+(q.question||q.title))
+
+if(answer===null) return
+
+let correct=false
+
+if(q.type==="wordMeaning"){
+
+correct=q.correct.includes(answer)
+
+}else if(q.type==="wordSpelling"){
+
+correct=answer.toLowerCase()===q.correct.toLowerCase()
+
+}else{
+
+correct=answer.trim()===q.correct.trim()
+
+}
+
+if(correct){
+
+alert("정답")
+
+removeWrong(q.index)
+
+wrongCorrect++
+
+}else{
+
+alert("오답\n정답:"+q.correct)
+
+}
+
+wrongIndex++
+
+runWrongQuestion()
+
+}
+
+function removeWrong(i){
+
+let notes=JSON.parse(localStorage.getItem("wrongNotes"))||[]
+
+notes.splice(i,1)
+
+localStorage.setItem("wrongNotes",JSON.stringify(notes))
+
+}
